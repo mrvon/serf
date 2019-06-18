@@ -22,16 +22,15 @@ func main() {
 	}
 	log.SetOutput(f)
 	serfEvent := os.Getenv("SERF_EVENT")
-	userEvent := os.Getenv("USER_EVENT")
-	userQuery := os.Getenv("SERF_QUERY_NAME")
-	if len(serfEvent) > 0 {
-		selfName := os.Getenv("SERF_SELF_NAME")
-		log.Printf("SerfEvent | %s | %s | %s", selfName, serfEvent, payload())
-	} else if len(userEvent) > 0 {
-		log.Printf("UserEvent | %s | %s", userEvent, payload())
-	} else if len(userQuery) > 0 {
-		log.Printf("UserQuery | %s | %s", userQuery, payload())
-	} else {
-		log.Printf("UNKNOWN EVENT")
+	selfName := os.Getenv("SERF_SELF_NAME")
+	switch serfEvent {
+	case "user":
+		userEvent := os.Getenv("SERF_USER_EVENT")
+		log.Printf("%s> %s | %s | %s", selfName, serfEvent, userEvent, payload())
+	case "query":
+		userQuery := os.Getenv("SERF_QUERY_NAME")
+		log.Printf("%s> %s | %s | %s", selfName, serfEvent, userQuery, payload())
+	default: // other event
+		log.Printf("%s> %s | %s", selfName, serfEvent, payload())
 	}
 }
